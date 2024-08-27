@@ -1,0 +1,26 @@
+.question-cell {
+  background-color: #02189f;
+  color: #f3a653;
+  text-align: center;
+  margin-top: 5px;
+  font-size: 6em; /* Scales between 1.5rem and 4rem based on viewport width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  text-shadow: 7px 5px #000;
+}
+
+.question-cell.gm {
+  cursor: pointer;
+}
+
+.question-cell.played {
+  color: rgba(64, 64, 64, 0);
+  text-shadow: none;
+}
+
+.question-cell.played.gm {
+  color: rgba(128, 128, 128, 0.3);
+  text-shadow: none;
+}

@@ -24,6 +24,10 @@ Question.belongsTo(Category);
 Round.hasMany(Player);
 Player.belongsTo(Round);
 
+Game.belongsTo(Round, { as: 'ActiveRound', foreignKey: 'activeRoundId' });
+Game.belongsTo(Question, { as: 'ActiveQuestion', foreignKey: 'activeQuestionId' });
+Game.belongsTo(Player, { as: 'ActivePlayer', foreignKey: 'activePlayerId' });
+
 // Export sequelize and models
 module.exports = {
   sequelize,

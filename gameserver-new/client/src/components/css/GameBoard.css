@@ -1,0 +1,52 @@
+/* src/components/GameBoard.css */
+
+@font-face {
+  font-family: 'Helvetica Compressed';
+  src: url('../../fonts/helvetica-compressed.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ITC Korinna';
+  src: url('../../fonts/itc-korinna-regular.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Helvetica Compressed', sans-serif;
+  background-color: #000;
+}
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  padding: 5px;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-auto-rows: minmax(100px, auto); /* Allow rows to stretch based on content */
+  gap: 5px;
+  flex-grow: 1; /* Allows the grid to grow and take up the remaining space */
+  width: 100%;
+  height: 100%;
+}
+
+.players-info {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  width: 100%;
+}

@@ -1,23 +1,41 @@
 // src/components/GameBoard.js
 import React, { useState } from 'react';
 import Category from './Category';
-import './GameBoard.css';
+import Player from './Player';
+import './css/GameBoard.css';
+import QuestionOverlay from './QuestionOverlay';
 
-function GameBoard({ game }) {
-  const [selectedQuestion, setSelectedQuestion] = useState(null);
+function GameBoard({ game, socket, isGameMaster }) {
+  const [overlayStyle, setOverlayStyle] = useState({});
 
   const handleQuestionClick = (question) => {
-    setSelectedQuestion(question);
+    socket.emit("setActiveQuestion", question.id);
   };
 
   const closeOverlay = () => {
-    setSelectedQuestion(null);
+    socket.emit("setActiveQuestion", null);
+  };
+
+  const setActivePlayer = (player) => {
+    socket.emit("setActivePlayer", player.id);
+  }
+
+  const unsetActivePlayer = () => {
+    socket.emit("setActivePlayer", null);
+  };
+
+  const correctAnswer = () => {
+    socket.emit("correctAnswer", null);
+  };
+
+  const wrongAnswer = () => {
+    socket.emit("wrongAnswer", null);
   };
 
   return (
     <div className="game-board">
       <div className="categories-grid">
-        {game.Rounds[0].Categories.map((category) => (
+        {game.ActiveRound.Categories.map((category) => (
           <Category
             key={category.id}
             category={category}
@@ -27,23 +45,19 @@ function GameBoard({ game }) {
       </div>
 
       <div className="players-info">
-        {game.Rounds[0].Players.map((player) => (
-          <div key={player.id} className={`player ${game.activePlayerId === player.id ? 'active' : ''}`}>
-            <div className="player-name">{player.name}</div>
-            <div className="player-score">{player.score} points</div>
-          </div>
+        {game.ActiveRound.Players.map((player) => (
+          <Player player={player} isActivePlayer={game.ActivePlayer && game.ActivePlayer.id === player.id} onclick={setActivePlayer} />
         ))}
       </div>
 
-      {selectedQuestion && (
-        <div className="question-overlay" onClick={closeOverlay}>
-          <div className="question-content">
-            {selectedQuestion.mediaType === 'text' && <div className="question-text">{selectedQuestion.question}</div>}
-            {selectedQuestion.mediaType === 'image' && <img src={selectedQuestion.mediaUrl} alt="question" />}
-            {selectedQuestion.mediaType === 'audio' && <audio controls src={selectedQuestion.mediaUrl} />}
-            {selectedQuestion.mediaType === 'video' && <video controls src={selectedQuestion.mediaUrl} />}
-          </div>
-        </div>
+      {game.ActiveQuestion && (
+        <QuestionOverlay question={game.ActiveQuestion}
+                          activePlayer={game.ActivePlayer}
+                          buttonCorrect={correctAnswer}
+                          buttonWrong={wrongAnswer}
+                          buttonReopen={unsetActivePlayer}
+                          buttonClose={closeOverlay}
+                          />
       )}
     </div>
   );

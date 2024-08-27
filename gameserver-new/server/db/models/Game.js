@@ -6,13 +6,33 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    currentRound: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
     state: {
       type: DataTypes.STRING,
       defaultValue: 'pending',
+    },
+    activeRoundId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Rounds', // This references the 'Rounds' table
+        key: 'id',
+      },
+      allowNull: true, // It can be null initially
+    },
+    activeQuestionId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Questions', // This references the 'Rounds' table
+        key: 'id',
+      },
+      allowNull: true, // It can be null initially
+    },
+    activePlayerId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Players', // This references the 'Rounds' table
+        key: 'id',
+      },
+      allowNull: true, // It can be null initially
     },
   });
 };

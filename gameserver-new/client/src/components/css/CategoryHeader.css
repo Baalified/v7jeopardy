@@ -1,0 +1,13 @@
+.category-header {
+  background-color: #02189f;
+  color: white;
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 3em;
+  min-height: 2.5lh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  text-transform: uppercase;
+}

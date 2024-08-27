@@ -1,0 +1,36 @@
+.player {
+  background-color: #02189f;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  margin: 0 20px;
+  font-size: 2em;
+  border-radius: 10px;
+  width: 200px;
+  margin-bottom: 5px;
+  z-index: 10000;
+}
+
+.player.active {
+  background-color: #25a525 !important;
+}
+
+.player.gm {
+  color: black;
+}
+
+.player.gm:nth-child(1) {
+  background-color: lightgreen;
+}
+
+.player.gm:nth-child(2) {
+  background-color: lightcoral;
+}
+
+.player.gm:nth-child(3) {
+  background-color: violet;
+}
+
+.player.gm:nth-child(4) {
+  background-color: orange;
+}
