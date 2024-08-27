@@ -1,0 +1,196 @@
+html,body {
+    margin:0px;
+    padding:0px;
+    height:100%;
+  }
+  
+  div.board {
+    position:relative;
+    width:100%;
+    height:85%;
+    background-color:black;
+  }
+  
+  div.category {
+    background-color:blue;
+    border:5px solid black;
+    text-align:center;
+    height:100%;
+    vertical-align:middle;
+    border-top:15px solid black;
+    border-bottom:15px solid black;
+    padding-bottom:10px;
+  }
+  
+  div.question {
+    background-color:blue;
+    border:5px solid black;
+    text-align:center;
+    color:yellow;
+    cursor:pointer;
+    height:100%;
+  }
+  
+  div.played {
+    color:grey !important;
+  }
+  
+  div.categorytext {
+    position: relative;
+    top: 50%;
+    width:100%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    color:white;
+    font-weight:bold;
+    font-size:2vw;
+  }
+  
+  div.questionpoints {
+    position: relative;
+    top: 50%;
+    width:100%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    color:yellow;
+    font-weight:bold;
+    font-size:3vw;
+  }
+  
+  div.boardrow {
+    height:16%;
+  }
+  
+  div.players {
+    position:absolute;
+    width:100%;
+    height:15%;
+    bottom:0;
+    background-color:black;
+  }
+  
+  div.playerrow {
+    height:100%;
+  }
+  
+  div.playercol {
+    text-align:center;
+    height:80%;
+  }
+  
+  div.player {
+    border:1px solid black;
+    border-top:none;
+    height:100%;
+  }
+  
+  div.playername {
+    height:50%;
+    font-weight:bold;
+    font-size:2vw;
+  }
+  div.playerscore {
+    height:50%;
+    font-weight:bold;
+    font-size:2vw;
+  }
+  
+  div.player1 {
+    background-color:green;
+    color:black;
+    width:100%;
+  }
+  
+  div.player2 {
+    background-color:red;
+    color:black;
+    width:100%;
+  }
+  
+  div.player3 {
+    background-color:DarkViolet;
+    color:black;
+    width:100%;
+  }
+  
+  div.player4 {
+    background-color:Orange;
+    color:black;
+    width:100%;
+  }
+  
+  div.questionanswered {
+    margin-top:20px;
+    height:70%;
+  }
+  
+  div.openquestion {
+    position:absolute;
+    top:100px;
+    bottom:15%;
+    left:150px;
+    right:150px;
+    border:20px solid black;
+    background-color:blue;
+    z-Index:10;
+    text-align:center;
+  }
+  
+  div.openquestiontext {
+    position: relative;
+    top: 50%;
+    width:100%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    color:white;
+    font-weight:bold;
+    font-size:4vw;
+    padding:20px;
+    white-space: pre-line;
+  }
+  
+  .gmanswer{
+    font-size:3vw;
+  }
+  
+  .gmbar {
+    padding-top:5px;
+    padding-bottom:5px;
+    width:100% !important; 
+  }
+  
+  .gmbar button {
+    font-size:1vw;
+    margin-left:10px;
+    margin-right:10px;
+  }
+
+  .splash {
+    position:absolute;
+    left:0px;
+    right:0px;
+    top:0px;
+    bottom:0px;
+    background-color: black;
+    z-index: 1000;
+  }
+
+  .splash img{
+    position:absolute;
+    left:0px;
+    right:0px;
+    top:0px;
+    bottom:0px;
+    z-index: 1000;
+  }
+
+  .openquestion .btn {
+    margin:5px;
+  }
+
+  openquestionsolution {
+    z-index: 900;
+  }

@@ -1,0 +1,343 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>virtual7 Jeopardy</title>
+    
+    <!--link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/jeopardy.css">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.min.js"></script-->
+    
+    <link href="css/bootstrap3.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/jeopardy.css">
+    
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/jquery-3.1.1.slim.min.js"></script>
+    <script src="js/tether.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
+    
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="controllers/controller.js"></script>
+  </head>
+  <body ng-app="v7jeopardy" style="background-color:black;">
+    <div ng-controller="AppCtrl" style="width:100%; height:100%;">
+
+      <div class="splash" ng-hide="gamemaster || !splashscreen">
+        <img src="images/splashscreen.jpg"/>
+      </div>
+    
+      <!--
+        ####################
+        # Game Master Menu #
+        ####################
+      -->
+      <div class="container gmbar" ng-hide="!gamemaster">
+        <button class="btn" ng-click="reloadGames(); showeditplayers = false; showloadgame = !showloadgame;">Load Game</button>
+        <button class="btn" ng-click="showeditplayers = !showeditplayers; showloadgame = false;">Edit Players</button>
+        <button class="btn" ng-click="buzzerTest()">Buzzer Test</button>
+        <button class="btn" ng-click="themePlay()">Play Theme</button>
+        <button class="btn" ng-click="themeToggle()">Toggle Theme Volume</button>
+        <button class="btn" ng-click="themeStop()">Stop Theme</button>
+        <button class="btn" ng-click="toggleSplash()" style="background-color:{{splashscreen && ('lightgreen') || ('lightgrey')}}">Toggle Splash</button>
+      </div>
+
+      <!--
+        ####################
+        # Join Game Dialog #
+        ####################
+      -->
+      <div class="openquestion" ng-hide="gamemaster || !currentgame || hidejoin" style="z-index:50">
+        <div class="openquestiontext" style="white-space: normal;">
+          Please enter your name<br/>
+          <form onsubmit="">
+            <input type="text" ng-model="newplayer.name" style="width:50%;font-size:2vw;"/>
+            <input style="display:none;" ng-model="newplayer.score" value="0"/>
+            <button type="submit" ng-click="joinGame()" style="font-size:2vw;margin-left:10px;padding-left:10px; padding-right:10px;background-color:green;color:white;display:inline-block;text-decoration:none;border:none;">Join!</button><br/>
+            <button ng-click="hidejoin = true" style="font-size:2vw;margin-left:10px;padding-left:10px; padding-right:10px;background-color:green;color:white;display:inline-block;text-decoration:none;border:none;">Only Watch</button>
+          </form>
+          <div style="font-size:2vw;color:red;" ng-hide="!showRejoin">
+            There is already a player with that name.<br/>
+            You can re-join as that player or chose different name above.<br/>
+            <button ng-click="rejoinGame()" style="font-size:2vw;margin-left:10px;padding-left:10px; padding-right:10px;background-color:green;color:white;display:inline-block;text-decoration:none;border:none;">Re-Join</button>
+          </div>
+        </div>
+      </div>
+      
+      <!--
+        ######################
+        # Edit Player Dialog #
+        ######################
+      -->
+      
+      <div class="container" style="position:relative;z-Index:20;background-color:white;" ng-hide="!showeditplayers">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="player in currentgame.players">
+              <td style="font-size:1vw"><input class="form-controll" ng-model="player.name"/></td>
+              <td style="font-size:1vw"><input class="form-controll" ng-model="player.score"/></td>
+            </tr>
+            <tr>
+              <td style="font-size:1vw"><input class="form-controll" ng-model="newplayer.name"/></td>
+              <td style="font-size:1vw"><input class="form-controll" ng-model="newplayer.score"/></td>
+            </tr>
+            <tr>
+              <td/>
+              <td>
+                <a href="#" class="btn btn-success btn-lg" ng-click="addPlayer()">
+                  <span class="glyphicon glyphicon-plus"></span> Add
+                </a>
+              </td>
+              <td>
+                <!-- TODO: Implement socket.io sync function -->
+                <a href="#" class="btn btn-success btn-lg" ng-click="saveGame()">
+                  <span class="glyphicon glyphicon-floppy-disk"></span> Save
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!--
+        ####################
+        # Load Game Dialog #
+        ####################
+      -->
+      <div class="container" style="position:relative;z-Index:20;background-color:white;" ng-hide="!showloadgame">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--
+              ng-repeat="game in games"
+              Show all games. The current game is marked with "(Current)"
+              
+              ng-click="loadGame(game)"
+              Load the game corresponding to the button, close the dialog
+            -->
+            <tr ng-repeat="game in games">
+              <td style="font-size:1vw">{{game.name}} <i ng-hide="currentgame.name != game.name">(Current)</i></td>
+              <td>
+                <a href="#" class="btn btn-success btn-lg" ng-click="loadGame(game)">
+                  <span class="glyphicon glyphicon-open"></span> Load
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!--
+        ################################
+        # Active Question Floating div #
+        ################################
+        # ng-hide="!activequestion" to #
+        # only show the div if an      #
+        # activequestion is in the     #
+        # gameState                    #
+        ################################
+      --> 
+      <div class="openquestion" ng-hide="!currentgame.activequestion">
+        <div class="openquestiontext" ng-hide="currentgame.activequestion.showsolution">{{currentgame.activequestion.question}}</div>
+        <img src="{{currentgame.activequestion.image}}" style="max-width:90%; max-height:90%; width:auto; height:auto; zoom:3;" ng-hide="!currentgame.activequestion.image || currentgame.activequestion.showsolution"/>
+        <div class="container" ng-hide="!currentgame.activequestion.audio || !gamemaster" style="width:90%;">
+          <img src="images/gameimages/play.jpg" style="width:200px; height:200px; position:absolute; left:200px;" ng-click="audioQuestionPlay()"/>
+          <img src="images/gameimages/replay.png" style="width:200px; height:200px; position:absolute; left:400px;" ng-click="audioQuestionReplay()"/>
+          <img src="images/gameimages/stop.svg" style="width:200px; height:200px; position:absolute; right:200px;" ng-click="audioQuestionStop()"/>
+        </div>
+        <div class="container openquestiontext" style="white-space: normal;" ng-hide="!currentgame.activequestion.audio || gamemaster || currentgame.activequestion.showsolution" style="width:90%;">
+          Listen...<br/>
+          <img src="images/gameimages/listen.png" ng-hide="gamemaster"/>
+        </div>
+        <img src="{{currentgame.activequestion.image_answer}}" ng-hide="!currentgame.activequestion.showsolution" style="max-width:90%; max-height:90%; width:auto; height:auto; zoom:2;"/>
+        <div class="container" ng-hide="!gamemaster" style="background-color:white;position:absolute;bottom:0px;padding:10px;width:100%;">
+          <div class="gmanswer">
+            {{currentgame.activequestion.answer}}
+          </div>
+          <a href="#" class="btn btn-warning btn-lg" ng-click="closeQuestion()">
+            <span class="glyphicon glyphicon-stop"></span> Close question
+          </a>
+          <a href="#" class="btn btn-info btn-lg" ng-click="reopenQuestion()" ng-disabled="!currentgame.activeplayer">
+            <span class="glyphicon glyphicon-repeat"></span> Reopen question
+          </a>
+          <a href="#" class="btn btn-success btn-lg" ng-click="correctAnswer()" ng-disabled="!currentgame.activeplayer">
+            <span class="glyphicon glyphicon-ok"></span> Correct answer
+          </a>
+          <a href="#" class="btn btn-danger btn-lg" ng-click="wrongAnswer()" ng-disabled="!currentgame.activeplayer">
+            <span class="glyphicon glyphicon-remove"></span> Wrong answer
+          </a>
+          <a href="#" class="btn btn-success btn-lg" ng-click="showSolution()" ng-disabled="!currentgame.activequestion.audio_answer && !currentgame.activequestion.image_answer">
+            <span class="glyphicon glyphicon-ok"></span> Show Solution
+          </a>
+        </div>
+      </div>
+      
+      <!--
+        ##############
+        # Game Board #
+        ##############
+      -->
+      <div class="container board">
+        <div class="row boardrow">
+          <!--
+            ng-repeat="category in categories"
+            For each available category, add a div with the category name 
+          -->
+          <div class="col category" ng-repeat="category in currentgame.categories">
+            <div class="categorytext">{{category.name}}</div>
+          </div>
+        </div>
+        <!--
+          ng-repeat="i in [] | range:5"
+          Use the range filter defined in controller.js tom implement a repeat from 0 to 4 to
+          create five rows for the five questions
+        -->
+        <div class="row boardrow" ng-repeat="i in [] | range:5">
+          <!--
+            ng-repeat="category in categories"
+            Again, for each category (in each row), add a box for the question
+          -->
+          <div class="col question" ng-repeat="category in currentgame.categories">
+            <!--
+              ng-click="choseQuestion(category.questions[i].id)"
+              Execute defined function - only for GameMasters
+              
+              ng-hide="playedquestions.indexOf(category.questions[i].id) !== -1"
+              Hide the question, if it was already played (id exists in gameState.playedquestions)
+            -->
+            <div class="questionpoints" ng-click="!gamemaster || choseQuestion(category.questions[i])" ng-hide="category.questions[i].played && !gamemaster" ng-class="{true:'played', false:''}[category.questions[i].played==true]">{{(i+1)*100}}</div>
+          </div>
+        </div>
+      </div>
+      
+      <!--
+        ###########################
+        # Player Names and Scores #
+        ###########################
+      -->
+      <style type="text/css">
+        div.players ul {
+          display: flex;
+          flex-wrap:wrap;
+          padding:0;
+        }
+
+        div.playersjoined {
+          width:85%;
+        }
+
+        div.players ul li {
+          display:inline-block;
+          list-style:none;
+          background:white;
+          margin:2px;
+          width:200px;
+          padding-left:5px;
+          padding-right:5px;
+          font-size:1.75em;
+          font-weight:bold;
+        }
+
+        div.players ul li.currentplayer {
+          background-color: green;
+          color: white;
+        }
+
+        div.players ul li.activeplayer {
+          background-color: red;
+          color: white;
+        }
+
+        div.players ul li p.score {
+          float:right;
+          margin:0;
+          width:50px;
+          text-align:right;
+        }
+        div.players ul li p.name {
+          float:left;
+          margin:0;
+          width:120px;
+          text-align:left;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      </style>
+      <div class="container players" ng-class="{true:'playersjoined', false:''}[currentplayer !== false]">
+          <!--
+            ng-repeat="player in players"
+            For each player in the gameState, add a colored player box with name and score
+          -->
+        <ul>
+          <li ng-repeat="player in getSortedPlayers()"
+            ng-class="{true:'currentplayer', false:''}[player == currentgame.players[currentplayer]]">
+              <p class="name">{{player.name}}</p><p class="score">{{player.score}}</p>
+          </li>
+        </ul>
+      </div>
+      <style type="text/css">
+        div.buzzer {
+          position:absolute;
+          right:0px;
+          bottom:0px;
+          width:15%;
+          z-index:100;
+          cursor:pointer;
+        }
+
+        div.buzzer img {
+          width:100%;
+        }
+      </style>
+      <div class="buzzer" ng-hide="currentplayer === false">
+        <img src="/images/buzzer.png" ng-click="buzz(currentplayer)"/>
+      </div>
+      
+      <style type="text/css">
+        div.activeplayer {
+          position:absolute;
+          left: 0;
+          right: 0;
+          margin-left: auto;
+          margin-right: auto;
+          bottom:20px;
+          width:50%;
+          font-size:3vw;
+          z-index:150;
+          background-color:blue;
+          color:white;
+          border:5px solid red;
+          text-align:center;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      </style>
+      <div class="activeplayer" ng-hide="currentgame.activeplayer === undefined">
+        {{currentgame.activeplayer.name}}
+      </div>
+    </div>
+  </body>
+</html>

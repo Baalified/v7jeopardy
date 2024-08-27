@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "bluetooth-serial-port": "^3.0.2",
+    "net": "^1.0.2"
+  }
+}

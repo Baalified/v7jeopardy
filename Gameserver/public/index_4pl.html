@@ -1,0 +1,239 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>virtual7 Jeopardy</title>
+    
+    <link href="css/bootstrap3.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/jeopardy.css">
+    
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/jquery-3.1.1.slim.min.js"></script>
+    <script src="js/tether.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
+    
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="controllers/controller.js"></script>
+  </head>
+  <body ng-app="v7jeopardy">
+    <div ng-controller="AppCtrl" style="width:100%; height:100%;">
+
+      <div class="splash" ng-hide="gamemaster || !splashscreen">
+        <img src="images/splashscreen.jpg"/>
+      </div>
+    
+      <!--
+        ####################
+        # Game Master Menu #
+        ####################
+      -->
+      <div class="container gmbar" ng-hide="!gamemaster">
+        <button class="btn" ng-click="reloadGames(); showeditplayers = false; showloadgame = !showloadgame;">Load Game</button>
+        <button class="btn" ng-click="showeditplayers = !showeditplayers; showloadgame = false;">Edit Players</button>
+        <button class="btn" ng-click="buzzerTest()">Buzzer Test</button>
+        <button class="btn" ng-click="themePlay()">Play Theme</button>
+        <button class="btn" ng-click="themeToggle()">Toggle Theme Volume</button>
+        <button class="btn" ng-click="themeStop()">Stop Theme</button>
+        <button class="btn" ng-click="toggleSplash()" style="background-color:{{splashscreen && ('lightgreen') || ('lightgrey')}}">Toggle Splash</button>
+      </div>
+      
+      <!--
+        ######################
+        # Edit Player Dialog #
+        ######################
+      -->
+      
+      <div class="container" style="position:relative;z-Index:20;background-color:white;" ng-hide="!showeditplayers">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="player in currentgame.players">
+              <td style="font-size:1vw"><input class="form-controll" ng-model="player.name"/></td>
+              <td style="font-size:1vw"><input class="form-controll" ng-model="player.score"/></td>
+            </tr>
+            <tr>
+              <td style="font-size:1vw"><input class="form-controll" ng-model="newplayer.name"/></td>
+              <td style="font-size:1vw"><input class="form-controll" ng-model="newplayer.score"/></td>
+            </tr>
+            <tr>
+              <td/>
+              <td>
+                <a href="#" class="btn btn-success btn-lg" ng-click="addPlayer()">
+                  <span class="glyphicon glyphicon-plus"></span> Add
+                </a>
+              </td>
+              <td>
+                <!-- TODO: Implement socket.io sync function -->
+                <a href="#" class="btn btn-success btn-lg" ng-click="saveGame()">
+                  <span class="glyphicon glyphicon-floppy-disk"></span> Save
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!--
+        ####################
+        # Load Game Dialog #
+        ####################
+      -->
+      <div class="container" style="position:relative;z-Index:20;background-color:white;" ng-hide="!showloadgame">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--
+              ng-repeat="game in games"
+              Show all games. The current game is marked with "(Current)"
+              
+              ng-click="loadGame(game)"
+              Load the game corresponding to the button, close the dialog
+            -->
+            <tr ng-repeat="game in games">
+              <td style="font-size:1vw">{{game.name}} <i ng-hide="currentgame.name != game.name">(Current)</i></td>
+              <td>
+                <a href="#" class="btn btn-success btn-lg" ng-click="loadGame(game)">
+                  <span class="glyphicon glyphicon-open"></span> Load
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!--
+        ################################
+        # Active Question Floating div #
+        ################################
+        # ng-hide="!activequestion" to #
+        # only show the div if an      #
+        # activequestion is in the     #
+        # gameState                    #
+        ################################
+      --> 
+      <div class="openquestion" ng-hide="!currentgame.activequestion">
+        <div class="openquestiontext" ng-hide="currentgame.activequestion.showsolution || currentgame.activequestion.video || currentgame.activequestion.image">{{currentgame.activequestion.question}}</div>
+        <img src="{{currentgame.activequestion.image}}" style="max-width:100%; max-height:100%; width:auto; height:auto; zoom:6;" ng-hide="!currentgame.activequestion.image || currentgame.activequestion.showsolution"/>
+        <div class="container" ng-hide="!currentgame.activequestion.audio || !gamemaster" style="width:90%;">
+          <img src="images/gameimages/play.jpg" style="width:200px; height:200px; position:absolute; left:200px;" ng-click="audioQuestionPlay()"/>
+          <img src="images/gameimages/replay.png" style="width:200px; height:200px; position:absolute; left:400px;" ng-click="audioQuestionReplay()"/>
+          <img src="images/gameimages/stop.svg" style="width:200px; height:200px; position:absolute; right:200px;" ng-click="audioQuestionStop()"/>
+        </div>
+        <div class="container" ng-hide="!currentgame.activequestion.video || !gamemaster" style="width:90%;">
+          <img src="images/gameimages/play.jpg" style="width:200px; height:200px; position:absolute; left:200px;" ng-click="videoQuestionPlay()"/>
+          <img src="images/gameimages/replay.png" style="width:200px; height:200px; position:absolute; left:400px;" ng-click="videoQuestionReplay()"/>
+          <img src="images/gameimages/stop.svg" style="width:200px; height:200px; position:absolute; right:200px;" ng-click="videoQuestionStop()"/>
+        </div>
+        <div class="container openquestiontext" ng-hide="!currentgame.activequestion.audio || gamemaster || currentgame.activequestion.showsolution" style="width:90%;">
+          Listen...<br/>
+          <img src="images/gameimages/listen.png" ng-hide="gamemaster"/>
+        </div>
+        <video ng-hide="!currentgame.activequestion.video || gamemaster" id="videoQuestion" style="max-width:100%; max-height:100%; zoom: 6; width:auto; height:auto;">
+          <source src="" type="video/mp4" id="mp4_src"/>
+        </video>
+
+        <img src="{{currentgame.activequestion.image_answer}}" ng-hide="!currentgame.activequestion.showsolution" style="max-width:100%; max-height:100%; width:auto; height:auto; zoom:6;"/>
+        <div class="container" ng-hide="!gamemaster" style="background-color:white;position:absolute;bottom:0px;padding:10px;width:100%;">
+          <div class="gmanswer">
+            {{currentgame.activequestion.answer}}
+          </div>
+          <a href="#" class="btn btn-warning btn-lg" ng-click="closeQuestion()">
+            <span class="glyphicon glyphicon-stop"></span> Close question
+          </a>
+          <a href="#" class="btn btn-info btn-lg" ng-click="reopenQuestion()" ng-disabled="!currentgame.activeplayer">
+            <span class="glyphicon glyphicon-repeat"></span> Reopen question
+          </a>
+          <a href="#" class="btn btn-success btn-lg" ng-click="correctAnswer()" ng-disabled="!currentgame.activeplayer">
+            <span class="glyphicon glyphicon-ok"></span> Correct answer
+          </a>
+          <a href="#" class="btn btn-danger btn-lg" ng-click="wrongAnswer()" ng-disabled="!currentgame.activeplayer">
+            <span class="glyphicon glyphicon-remove"></span> Wrong answer
+          </a>
+          <a href="#" class="btn btn-success btn-lg" ng-click="showSolution()" ng-disabled="!currentgame.activequestion.video_answer && !currentgame.activequestion.audio_answer && !currentgame.activequestion.image_answer">
+            <span class="glyphicon glyphicon-ok"></span> Show Solution
+          </a>
+        </div>
+      </div>
+      
+      <!--
+        ##############
+        # Game Board #
+        ##############
+      -->
+      <div class="container board">
+        <div class="row boardrow">
+          <!--
+            ng-repeat="category in categories"
+            For each available category, add a div with the category name 
+          -->
+          <div class="col category" ng-repeat="category in currentgame.categories">
+            <div class="categorytext">{{category.name}}</div>
+          </div>
+        </div>
+        <!--
+          ng-repeat="i in [] | range:5"
+          Use the range filter defined in controller.js tom implement a repeat from 0 to 4 to
+          create five rows for the five questions
+        -->
+        <div class="row boardrow" ng-repeat="i in [] | range:5">
+          <!--
+            ng-repeat="category in categories"
+            Again, for each category (in each row), add a box for the question
+          -->
+          <div class="col question" ng-repeat="category in currentgame.categories">
+            <!--
+              ng-click="choseQuestion(category.questions[i].id)"
+              Execute defined function - only for GameMasters
+              
+              ng-hide="playedquestions.indexOf(category.questions[i].id) !== -1"
+              Hide the question, if it was already played (id exists in gameState.playedquestions)
+            -->
+            <div class="questionpoints" ng-click="!gamemaster || choseQuestion(category.questions[i])" ng-hide="category.questions[i].played && !gamemaster" ng-class="{true:'played', false:''}[category.questions[i].played==true]">{{(i+1)*100}}</div>
+          </div>
+        </div>
+      </div>
+      
+      <!--
+        ###########################
+        # Player Names and Scores #
+        ###########################
+      -->
+      <div class="container players">
+        <div class="row playerrow">
+          <!--
+            ng-repeat="player in players"
+            For each player in the gameState, add a colored player box with name and score
+          -->
+          <div class="col playercol" ng-repeat="player in currentgame.players">
+            <!-- TEMP click to buzz (ng-click is temp) -->
+            <div class="player" style="background-color:{{
+                currentgame.activeplayer==player && ('green') ||
+                currentgame.activeplayer==null && gamemaster && $index == 0 && ('orange') ||
+                currentgame.activeplayer==null && gamemaster && $index == 1 && ('lightblue') ||
+                currentgame.activeplayer==null && gamemaster && $index == 2 && ('lightgreen') ||
+                currentgame.activeplayer==null && gamemaster && $index == 3 && ('pink') ||
+                ('lightgrey')
+              }};color:black;" ng-click="buzz($index)">
+              <div class="playername">{{player.name}}</div>
+              <div class="playerscore">{{player.score}}<a ng-hide="!gamemaster"> ({{player.answers}})</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

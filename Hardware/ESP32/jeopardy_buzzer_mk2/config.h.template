@@ -1,0 +1,14 @@
+// config.h.template
+
+#ifndef CONFIG_H
+#define CONFIG_H
+
+// WiFi credentials
+#define WIFI_SSID "your-ssid-here"
+#define WIFI_PASSWORD "your-password-here"
+
+// Server configuration
+#define SERVER_HOST "your-server-host-here"
+#define SERVER_PORT 8080
+
+#endif
