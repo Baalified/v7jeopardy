@@ -14,5 +14,9 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
+    buzzer: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   });
 };

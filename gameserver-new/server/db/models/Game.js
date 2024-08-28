@@ -6,9 +6,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    state: {
-      type: DataTypes.STRING,
-      defaultValue: 'pending',
+    buzzerTest: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     activeRoundId: {
       type: DataTypes.INTEGER,

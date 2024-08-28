@@ -8,7 +8,7 @@ import QuestionTypeImage from './QuestionTypeImage';
 import QuestionTypeText from './QuestionTypeText';
 import QuestionTypeVideo from './QuestionTypeVideo';
 
-function QuestionOverlay({ question, activePlayer, buttonCorrect, buttonWrong, buttonReopen, buttonClose }) {
+function QuestionOverlay({ question, activePlayer, buttonCorrect, buttonWrong, buttonReopen, buttonClose, socket }) {
   const { isGameMaster } = useContext(GameMasterContext);
   
   return (
@@ -17,15 +17,16 @@ function QuestionOverlay({ question, activePlayer, buttonCorrect, buttonWrong, b
         <div className="question-content" >
           {question.mediaType === 'text' && <QuestionTypeText question={question} />}
           {question.mediaType === 'image' && <QuestionTypeImage question={question} />}
-          {question.mediaType === 'audio' && <QuestionTypeAudio question={question} />}
-          {question.mediaType === 'video' && <QuestionTypeVideo question={question} />}
+          {question.mediaType === 'audio' && <QuestionTypeAudio question={question} socket={socket} />}
+          {question.mediaType === 'video' && <QuestionTypeVideo question={question} socket={socket} />}
         </div>
         {isGameMaster && (<QuestionControls question={question}
                           activePlayer={activePlayer}
                           buttonCorrect={buttonCorrect}
                           buttonWrong={buttonWrong}
                           buttonReopen={buttonReopen}
-                          buttonClose={buttonClose} />)}
+                          buttonClose={buttonClose}
+                          socket={socket} />)}
       </div>
     </div>
   );

@@ -19,23 +19,23 @@ async function seed() {
     ]);
 
     // Category 1: Music Videos
-    var category = await Category.create({ name: 'Music Videos', RoundId: round.id });
+    var category = await Category.create({ name: 'Audio Test', RoundId: round.id });
     await Question.bulkCreate([
-      { question: 'Which artist had a hit with "Thriller"?', answer: 'Michael Jackson', mediaType: 'text', points: 100, CategoryId: category.id },
-      { question: 'What year was MTV launched?', answer: '1981', mediaType: 'text', points: 200, CategoryId: category.id },
-      { question: 'Who directed the music video for "Bad Romance"?', answer: 'Francis Lawrence', mediaType: 'text', points: 300, CategoryId: category.id },
-      { question: 'Which song is known for its backward messages in the video?', answer: 'Stairway to Heaven', mediaType: 'text', points: 400, CategoryId: category.id },
-      { question: 'Which artist won the first MTV Video Music Award for Best Video?', answer: 'The Cars', mediaType: 'text', points: 500, CategoryId: category.id },
+      { question: '', answer: 'ABBA', mediaType: 'audio', mediaUrl: '/media/questions/test/ABBA - People Need Love.m4a', points: 100, CategoryId: category.id },
+      { question: '', answer: 'Aerosmith', mediaType: 'audio', mediaUrl: '/media/questions/test/Aerosmith - Dream On.m4a', points: 200, CategoryId: category.id },
+      { question: '', answer: 'Amy Winehouse', mediaType: 'audio', mediaUrl: '/media/questions/test/Amy Winehouse - Stronger Than Me.m4a', points: 300, CategoryId: category.id },
+      { question: '', answer: 'Backstreet Boys', mediaType: 'audio', mediaUrl: '/media/questions/test/Backstreet Boys - Tell Me That Im Dreamin.m4a', points: 400, CategoryId: category.id },
+      { question: '', answer: 'Bloodhound Gang', mediaType: 'audio', mediaUrl: '/media/questions/test/Bloodhound Gang - Legend In My Spare Time.m4a', points: 500, CategoryId: category.id },
     ]);
 
     // Category 2: AI and Technology
-    var category = await Category.create({ name: 'AI and Technology', RoundId: round.id });
+    var category = await Category.create({ name: 'Video Test', RoundId: round.id });
     await Question.bulkCreate([
-      { question: 'What does AI stand for?', answer: 'Artificial Intelligence', mediaType: 'text', points: 100, CategoryId: category.id },
-      { question: 'Who is considered the father of modern computing?', answer: 'Alan Turing', mediaType: 'text', points: 200, CategoryId: category.id },
-      { question: 'What is the name of the AI that defeated Go champion Lee Sedol?', answer: 'AlphaGo', mediaType: 'text', points: 300, CategoryId: category.id },
-      { question: 'What programming language is primarily used for AI development?', answer: 'Python', mediaType: 'text', points: 400, CategoryId: category.id },
-      { question: 'Which company developed the AI language model GPT?', answer: 'OpenAI', mediaType: 'text', points: 500, CategoryId: category.id },
+      { question: '', answer: 'angels', mediaType: 'video', mediaUrl: '/media/questions/testv/angels.mp4', points: 100, CategoryId: category.id },
+      { question: '', answer: 'bohemian', mediaType: 'video', mediaUrl: '/media/questions/testv/bohemian.mp4', points: 200, CategoryId: category.id },
+      { question: '', answer: 'cake', mediaType: 'video', mediaUrl: '/media/questions/testv/cake.mp4', points: 300, CategoryId: category.id },
+      { question: '', answer: 'end', mediaType: 'video', mediaUrl: '/media/questions/testv/end.mp4', points: 400, CategoryId: category.id },
+      { question: '', answer: 'feelgood', mediaType: 'video', mediaUrl: '/media/questions/testv/feelgood.mp4', points: 500, CategoryId: category.id },
     ]);
 
     // Category 3: Classic Movies

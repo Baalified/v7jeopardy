@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import io from 'socket.io-client';
 import GameBoard from './components/GameBoard';
 import { GameMasterContext } from './context/GameMasterContext';
-
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const socket = io.connect();
 
@@ -33,20 +33,9 @@ function App() {
   useEffect(() => {
     if (gameState && !gameState.ActiveRound && gameState.Rounds.length > 0) {
       // Only set the active round once gameState is fully updated
-      setActiveRound(gameState.Rounds[0]);
+      socket.emit("setActiveRound", gameState.Rounds[0].id);
     }
   }, [gameState]);
-
-  function setActiveRound(round) {
-    // Create a new game state object with the updated ActiveRound
-    const updatedGameState = {
-      ...gameState,
-      ActiveRound: round,
-    };
-
-    // Update the state in the client
-    setGameState(updatedGameState);
-  }
 
   if (!gameState || !gameState.ActiveRound) {
     return <div style={{color: 'white'}}>Loading...</div>;
@@ -54,7 +43,7 @@ function App() {
 
   return (
     <div className="App">
-      <GameBoard game={gameState} socket={socket} isGameMaster={isGameMaster} />
+      <GameBoard game={gameState} socket={socket} />
     </div>
   );
 }

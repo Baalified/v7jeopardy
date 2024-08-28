@@ -2,9 +2,35 @@
 import React from 'react';
 import "./css/QuestionControls.css";
 
-function QuestionControls({ question, activePlayer, buttonCorrect, buttonWrong, buttonReopen, buttonClose }) {
+function QuestionControls({ question, activePlayer, buttonCorrect, buttonWrong, buttonReopen, buttonClose, socket }) {
+
+  const handlePlay = () => {
+    socket.emit('playMedia');
+  };
+
+  const handlePause = () => {
+    socket.emit('pauseMedia');
+  };
+
+  const handleStop = () => {
+    socket.emit('stopMedia');
+  };
+
   return (
     <div className="question-controls">
+      {(question.mediaType === 'audio' || question.mediaType === 'video') && (
+        <div className="question-media-controls">
+          <button onClick={handlePlay} className="media-button play">
+            <i className="fas fa-play"></i>
+          </button>
+          <button onClick={handlePause} className="media-button pause">
+            <i className="fas fa-pause"></i>
+          </button>
+          <button onClick={handleStop} className="media-button stop">
+            <i className="fas fa-fast-backward"></i>
+          </button>
+        </div>
+      )}
       <div className="question-answer">
         {question.answer}
       </div>
