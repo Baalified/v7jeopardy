@@ -19,9 +19,20 @@ async function seed() {
     ]);
 
     // Category 1: Music Videos
-    var category = await Category.create({ name: 'Audio Test', RoundId: round.id });
+    var category = await Category.create({ name: 'Slides Test', RoundId: round.id });
     await Question.bulkCreate([
-      { question: '', answer: 'ABBA', mediaType: 'audio', mediaUrl: '/media/questions/test/ABBA - People Need Love.m4a', points: 100, CategoryId: category.id },
+      { question: '',
+        answer: 'Leonardo DaVinci',
+        mediaType: 'slides',
+        mediaUrls: [
+          '/media/questions/twitter/davinci/tweet1.png',
+          '/media/questions/twitter/davinci/tweet2.png',
+          '/media/questions/twitter/davinci/tweet3.png',
+          '/media/questions/twitter/davinci/tweet4.png',
+          '/media/questions/twitter/davinci/tweet5.png'
+        ],
+        points: 100,
+        CategoryId: category.id },
       { question: '', answer: 'Aerosmith', mediaType: 'audio', mediaUrl: '/media/questions/test/Aerosmith - Dream On.m4a', points: 200, CategoryId: category.id },
       { question: '', answer: 'Amy Winehouse', mediaType: 'audio', mediaUrl: '/media/questions/test/Amy Winehouse - Stronger Than Me.m4a', points: 300, CategoryId: category.id },
       { question: '', answer: 'Backstreet Boys', mediaType: 'audio', mediaUrl: '/media/questions/test/Backstreet Boys - Tell Me That Im Dreamin.m4a', points: 400, CategoryId: category.id },
@@ -29,7 +40,7 @@ async function seed() {
     ]);
 
     // Category 2: AI and Technology
-    var category = await Category.create({ name: 'Video Test', RoundId: round.id });
+    var category = await Category.create({ name: 'Music Videos', RoundId: round.id });
     await Question.bulkCreate([
       { question: '', answer: 'angels', mediaType: 'video', mediaUrl: '/media/questions/testv/angels.mp4', points: 100, CategoryId: category.id },
       { question: '', answer: 'bohemian', mediaType: 'video', mediaUrl: '/media/questions/testv/bohemian.mp4', points: 200, CategoryId: category.id },
@@ -49,13 +60,13 @@ async function seed() {
     ]);
 
     // Category 4: World Geography
-    var category = await Category.create({ name: 'World Geography', RoundId: round.id });
+    var category = await Category.create({ name: 'Movie Trivia', RoundId: round.id });
     await Question.bulkCreate([
       { question: 'What is the capital of France?', answer: 'Paris', mediaType: 'text', points: 100, CategoryId: category.id },
       { question: 'Which river is the longest in the world?', answer: 'Nile', mediaType: 'text', points: 200, CategoryId: category.id },
       { question: 'Which country has the most natural lakes?', answer: 'Canada', mediaType: 'text', points: 300, CategoryId: category.id },
       { question: 'What is the smallest country in the world?', answer: 'Vatican City', mediaType: 'text', points: 400, CategoryId: category.id },
-      { question: 'Which continent is the Sahara Desert located on?', answer: 'Africa', mediaType: 'text', points: 500, CategoryId: category.id },
+      { question: 'The bomb will explode if the bus drops below this speed in the movie "Speed"', answer: 'Africa', mediaType: 'text', points: 500, CategoryId: category.id },
     ]);
 
     // Category 5: Literature

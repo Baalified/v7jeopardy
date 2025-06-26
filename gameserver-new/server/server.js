@@ -144,6 +144,11 @@ io.on('connection', async (socket) => {
     updateGameState();
   });
 
+  socket.on('setIndex', async (idx) => {
+    console.log("received setIndex("+idx+")");
+    io.emit('setIndex', idx);
+  });
+
   socket.on('updatePlayer', async (player) => {
     console.log("received updatePlayer("+player+")");
     

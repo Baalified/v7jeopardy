@@ -22,6 +22,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    mediaUrls  : {                       // <— NEW
+      type     : DataTypes.JSON,         // JSON → TEXT in SQLite
+      allowNull: true,
+      defaultValue: []
+    },
     played: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
