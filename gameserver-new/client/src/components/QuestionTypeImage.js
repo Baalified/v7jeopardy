@@ -4,7 +4,9 @@ import "./css/QuestionTypeImage.css";
 
 function QuestionTypeImage({ question }) {
   return (
-    <img src={question.mediaUrl} alt="question" />
+    <div className="question-image">
+      <img src={question.mediaUrl} alt="question" />
+    </div>
   );
 }
 

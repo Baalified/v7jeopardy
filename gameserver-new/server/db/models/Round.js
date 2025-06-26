@@ -2,8 +2,8 @@
 module.exports = (sequelize) => {
   const { DataTypes } = require('sequelize');
   return sequelize.define('Round', {
-    roundNumber: {
-      type: DataTypes.INTEGER,
+    name: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   });
