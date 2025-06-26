@@ -10,6 +10,14 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    answerMediaType: {
+      type: DataTypes.STRING,
+      allowNull: true, // 'text', 'image', 'audio', 'video'
+    },
+    answerMediaUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     points: {
       type: DataTypes.INTEGER,
       allowNull: false,

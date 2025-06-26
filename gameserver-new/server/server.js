@@ -14,24 +14,36 @@ var gameState = undefined;
 const reloadGameState = async () => {
   gameState = await Game.findOne({
     include: [
+      { model: Round, as: 'ActiveRound', include: [
+        Player,
+        { model: Category, include: [
+          Question
+        ] }
+      ] },
       { model: Question, as: 'ActiveQuestion' },
       { model: Player, as: 'ActivePlayer' },
       {
-        model: Round,
-        include: [
-          {
-            model: Category,
-            include: [ Question ],
-          },
-          {
-            model: Player, // Include players for each round
-          },
-        ],
+        model: Round
       },
     ]
   });
 
-  var activeRound = null;
+  if (gameState && gameState.ActiveRound && gameState.ActiveRound.Categories) {
+    gameState.ActiveRound.Categories.sort((a, b) => a.id - b.id);
+    gameState.ActiveRound.Categories.forEach(category => {
+      category.Questions.sort((a, b) => a.points - b.points);
+    });
+  }
+
+  if (gameState && gameState.ActiveRound && gameState.ActiveRound.Players) {
+    gameState.ActiveRound.Players.sort((a, b) => a.id - b.id);
+  }
+
+  if (gameState && gameState.Rounds) {
+    gameState.Rounds.sort((a, b) => a.id - b.id);
+  }
+
+  /*var activeRound = null;
 
   if(gameState.activeRoundId) {
     activeRound = await Round.findByPk(gameState.activeRoundId, {
@@ -50,11 +62,11 @@ const reloadGameState = async () => {
     });
     activeRound.Players.sort((a, b) => a.id - b.id);
     gameState.ActiveRound = activeRound;
-  }
+  }*/
   
   updateBuzzerStates();
   
-  io.emit('gameState', {...gameState.toJSON(), ActiveRound: activeRound});
+  io.emit('gameState', gameState);
 };
 
 // Initialize game state on server start
@@ -84,6 +96,7 @@ io.on('connection', async (socket) => {
   socket.on('setActiveRound', async (roundId) => {
     console.log("received setActiveRound("+roundId+")");
     gameState.activeRoundId = roundId;
+    gameState.showSolution = false;
     updateGameState();
   });
 
@@ -105,6 +118,7 @@ io.on('connection', async (socket) => {
     } catch (error) {
       console.error('Error updating game state in DB:', error);
     }
+    gameState.showSolution = false;
 
     updateGameState();
   });
@@ -112,7 +126,7 @@ io.on('connection', async (socket) => {
   socket.on('setActivePlayer', async (playerId) => {
     console.log("received setActivePlayer("+playerId+")");
     if(playerId != null) {
-      if(gameState.ActivePlayer || (!gameState.ActiveQuestion && !gameState.buzzerTest)) {
+      if(gameState.ActivePlayer || gameState.showSolution || (!gameState.ActiveQuestion && !gameState.buzzerTest)) {
         return;
       }
       io.emit('pauseMedia');
@@ -141,6 +155,18 @@ io.on('connection', async (socket) => {
   socket.on('setBuzzerTest', async (state) => {
     console.log("received setBuzzerTest("+state+")");
     gameState.buzzerTest = state;
+    updateGameState();
+  });
+
+  socket.on('showSolution', async () => {
+    console.log("received showSolution()");
+    gameState.showSolution = true;
+    updateGameState();
+  });
+
+  socket.on('setActiveRound', async (roundId) => {
+    console.log("Received setActiveRound:", roundId);
+    gameState.activeRoundId = roundId;
     updateGameState();
   });
 
@@ -267,7 +293,7 @@ function handleBuzzerData(data, buzzer) {
 }
 
 async function handleBuzz(buzzer) {
-  if (gameState && (gameState.ActiveQuestion || gameState.buzzerTest) && !gameState.ActivePlayer) {
+  if (gameState && (gameState.ActiveQuestion || gameState.buzzerTest) && !gameState.ActivePlayer && !gameState.showSolution) {
     const player = gameState.ActiveRound.Players.find(p => p.buzzer === buzzer.uniqueId);
     if (player) {
       gameState.activePlayerId = player.id;

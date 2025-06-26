@@ -10,6 +10,10 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    showSolution: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     activeRoundId: {
       type: DataTypes.INTEGER,
       references: {

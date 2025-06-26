@@ -58,6 +58,14 @@
   background-color: #fb8c00;
 }
 
+.control-button.solution {
+  background-color: #1dcea2; /* Blue */
+}
+
+.control-button.solution:hover {
+  background-color: #1bc298;
+}
+
 .control-button.close {
   background-color: #2196F3; /* Blue */
 }
