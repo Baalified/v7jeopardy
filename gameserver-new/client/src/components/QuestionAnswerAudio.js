@@ -47,7 +47,7 @@ function QuestionAnswerAudio({ question, socket }) {
       <div className="question-audio-placeholder">
         <i className="fas fa-volume-up"></i>
       </div>
-      <audio ref={audioRef} muted={isGameMaster} controls>
+      <audio ref={audioRef} muted={isGameMaster} controls autoPlay="true">
         <source src={question.answerMediaUrl} type="audio/mp3" />
         Your browser does not support the audio element.
       </audio>

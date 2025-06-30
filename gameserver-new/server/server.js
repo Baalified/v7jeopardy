@@ -158,6 +158,12 @@ io.on('connection', async (socket) => {
     updateGameState();
   });
 
+  socket.on('setSplashScreen', async (state) => {
+    console.log("received setSplashScreen("+state+")");
+    gameState.splashScreen = state;
+    updateGameState();
+  });
+
   socket.on('showSolution', async () => {
     console.log("received showSolution()");
     gameState.showSolution = true;

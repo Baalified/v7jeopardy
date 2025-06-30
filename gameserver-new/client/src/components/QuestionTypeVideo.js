@@ -44,7 +44,7 @@ function QuestionTypeVideo({ question, socket }) {
 
   return (
     <div className="question-video">
-      <video ref={videoRef} muted={isGameMaster} preload="auto">
+      <video ref={videoRef} muted={isGameMaster} preload="auto" autoPlay="true">
         <source src={question.mediaUrl} type="video/mp4" />
         Your browser does not support the video tag.
       </video>

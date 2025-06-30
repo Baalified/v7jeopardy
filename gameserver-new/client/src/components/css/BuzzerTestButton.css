@@ -1,4 +1,4 @@
-.buzzer-test-button {
+.buzzer-test-button, .play-intro-button {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -24,4 +24,12 @@
 
 .buzzer-test-button.active:hover {
   background-color: #c82333; /* Darker red on hover */
+}
+
+.play-intro-button {
+  background-color: #35dc45; /* Red when active */
+}
+
+.play-intro-button:hover {
+  background-color: #35c845; /* Red when active */
 }

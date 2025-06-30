@@ -24,10 +24,9 @@ function QuestionTypeSlides({ question, socket }) {
   if (images.length === 0) return null;
 
   return (
-    <div className="qts-wrapper">
+    <div className="question-image">
       <img
         src={images[index]}
-        alt={`question slide ${index + 1}`}
         className="qts-image"
       />
 

@@ -6,6 +6,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    splashScreen: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
     buzzerTest: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

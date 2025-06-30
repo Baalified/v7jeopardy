@@ -8,6 +8,7 @@ import BuzzerTestButton from './BuzzerTestButton';
 import BuzzerTestOverlay from './BuzzerTestOverlay';
 import LoadRoundButton from './LoadRoundButton';
 import { GameMasterContext } from '../context/GameMasterContext';
+import SplashScreen from './SplashScreen';
 
 function GameBoard({ game, socket }) {
   const [previousActivePlayerId, setPreviousActivePlayerId] = useState(null);
@@ -116,6 +117,14 @@ function GameBoard({ game, socket }) {
     socket.emit("setBuzzerTest", state)
   }
 
+  const splashScreen = (state) => {
+    socket.emit("setSplashScreen", state)
+  }
+
+  const playIntro = (state) => {
+    socket.emit("playMedia", state)
+  }
+
   const handleRoundChange = (roundId) => {
     socket.emit("setActiveRound", roundId);
   };
@@ -158,9 +167,13 @@ function GameBoard({ game, socket }) {
         <BuzzerTestOverlay activePlayer={game.ActivePlayer} buttonReopen={unsetActivePlayer} />
       )}
 
+      {game.splashScreen && !isGameMaster && (
+        <SplashScreen socket={socket} />
+      )}
+
       {isGameMaster && (
         <>
-          <BuzzerTestButton gameState={game} onToggle={buzzerTest} />
+          <BuzzerTestButton gameState={game} onToggle={buzzerTest} onToggleSplash={splashScreen} onPlayIntro={playIntro} />
           <LoadRoundButton
               rounds={game.Rounds}
               activeRoundId={game.ActiveRound.id}
