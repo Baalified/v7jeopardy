@@ -1,0 +1,26 @@
+.question-songless {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.question-songless-duration {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.question-songless .question-audio-placeholder {
+  font-size: 256px;
+}
+
+.question-songless audio {
+  max-width: 100%;
+  height: auto;
+  margin-top: 20px;
+}

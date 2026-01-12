@@ -1,8 +1,22 @@
 // src/components/QuestionControls.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import "./css/QuestionControls.css";
 
 function QuestionControls({ question, activePlayer, buttonCorrect, buttonWrong, buttonReopen, buttonClose, buttonSolution, socket }) {
+  const [currentRound, setCurrentRound] = useState(1);
+
+  useEffect(() => {
+    // Listen for round changes from server
+    const handleRoundChange = (round) => {
+      setCurrentRound(round);
+    };
+
+    socket.on('setSonglessRound', handleRoundChange);
+
+    return () => {
+      socket.off('setSonglessRound', handleRoundChange);
+    };
+  }, [socket]);
 
   const handlePlay = () => {
     socket.emit('playMedia');
@@ -16,9 +30,13 @@ function QuestionControls({ question, activePlayer, buttonCorrect, buttonWrong, 
     socket.emit('stopMedia');
   };
 
+  const handleRoundChange = (round) => {
+    socket.emit('setSonglessRound', round);
+  };
+
   return (
     <div className="question-controls">
-      {(question.mediaType === 'audio' || question.mediaType === 'video') && (
+      {(question.mediaType === 'audio' || question.mediaType === 'video' || question.mediaType === 'songless') && (
         <div className="question-media-controls">
           <button onClick={handlePlay} className="media-button play">
             <i className="fas fa-play"></i>
@@ -29,6 +47,22 @@ function QuestionControls({ question, activePlayer, buttonCorrect, buttonWrong, 
           <button onClick={handleStop} className="media-button stop">
             <i className="fas fa-fast-backward"></i>
           </button>
+        </div>
+      )}
+      {question.mediaType === 'songless' && (
+        <div className="question-songless-round-controls">
+          <div className="round-controls-label">Round:</div>
+          <div className="round-buttons">
+            {[1, 2, 3, 4, 5, 6].map((round) => (
+              <button
+                key={round}
+                onClick={() => handleRoundChange(round)}
+                className={`round-button ${currentRound === round ? 'active' : ''}`}
+              >
+                {round}
+              </button>
+            ))}
+          </div>
         </div>
       )}
       <div className="question-answer">

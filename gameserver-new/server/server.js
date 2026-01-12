@@ -181,6 +181,11 @@ io.on('connection', async (socket) => {
     io.emit('setIndex', idx);
   });
 
+  socket.on('setSonglessRound', async (round) => {
+    console.log("received setSonglessRound("+round+")");
+    io.emit('setSonglessRound', round);
+  });
+
   socket.on('updatePlayer', async (player) => {
     console.log("received updatePlayer("+player+")");
     

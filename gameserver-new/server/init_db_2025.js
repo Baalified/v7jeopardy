@@ -18,229 +18,27 @@ async function seed() {
       { name: 'Player 4', RoundId: round.id },
     ]);
 
-    // Category 1: Music Videos
-    var category = await Category.create({ name: 'X', RoundId: round.id });
-    await Question.bulkCreate([
-      { question: '',
-        answer: 'Captain Jack Sparrow',
-        mediaType: 'slides',
-        mediaUrls: [
-          '/media/questions/twitter/sparrow/image1.png',
-          '/media/questions/twitter/sparrow/image2.png',
-          '/media/questions/twitter/sparrow/image3.png',
-          '/media/questions/twitter/sparrow/image4.png',
-          '/media/questions/twitter/sparrow/image5.png'
-        ],
-        answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/twitter/sparrow/solution.png',
-        points: 100,
-        CategoryId: category.id },
-        { question: '',
-        answer: 'Elon Musk',
-        mediaType: 'slides',
-        mediaUrls: [
-          '/media/questions/twitter/musk/image1.png',
-          '/media/questions/twitter/musk/image2.png',
-          '/media/questions/twitter/musk/image3.png',
-          '/media/questions/twitter/musk/image4.png',
-          '/media/questions/twitter/musk/image5.png'
-        ],
-        answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/twitter/musk/solution.png',
-        points: 200,
-        CategoryId: category.id },
-        { question: '',
-        answer: 'Albert Einstein',
-        mediaType: 'slides',
-        mediaUrls: [
-          '/media/questions/twitter/einstein/image1.png',
-          '/media/questions/twitter/einstein/image2.png',
-          '/media/questions/twitter/einstein/image3.png',
-          '/media/questions/twitter/einstein/image4.png',
-          '/media/questions/twitter/einstein/image5.png'
-        ],
-        answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/twitter/einstein/solution.png',
-        points: 300,
-        CategoryId: category.id },
-        { question: '',
-        answer: 'Cleopatra',
-        mediaType: 'slides',
-        mediaUrls: [
-          '/media/questions/twitter/cleopatra/image1.png',
-          '/media/questions/twitter/cleopatra/image2.png',
-          '/media/questions/twitter/cleopatra/image3.png',
-          '/media/questions/twitter/cleopatra/image4.png',
-          '/media/questions/twitter/cleopatra/image5.png'
-        ],
-        answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/twitter/cleopatra/solution.png',
-        points: 400,
-        CategoryId: category.id },
-        { question: '',
-        answer: 'Freddie Mercury',
-        mediaType: 'slides',
-        mediaUrls: [
-          '/media/questions/twitter/mercury/image1.png',
-          '/media/questions/twitter/mercury/image2.png',
-          '/media/questions/twitter/mercury/image3.png',
-          '/media/questions/twitter/mercury/image4.png',
-          '/media/questions/twitter/mercury/image5.png'
-        ],
-        answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/twitter/mercury/solution.png',
-        points: 500,
-        CategoryId: category.id }
-    ]);
-
-    // Category 2: AI and Technology
-    var category = await Category.create({ name: 'Childs Pl-AI', RoundId: round.id });
-    await Question.bulkCreate([
-      { question: '', answer: 'Pulp Fiction', answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/childsplai/pulpfiction_solution.jpg', mediaType: 'video',
-        mediaUrl: '/media/questions/childsplai/pulpfiction_1.mp4',
-        points: 100, CategoryId: category.id
-      },
-      { question: '', answer: '50 Shades of Grey', answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/childsplai/50shades_solution.jpg', mediaType: 'video',
-        mediaUrl: '/media/questions/childsplai/50shades.mp4',
-        points: 200, CategoryId: category.id
-      },
-      { question: '', answer: 'Donnie Darko', answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/childsplai/donnie_solution.jpg', mediaType: 'video',
-        mediaUrl: '/media/questions/childsplai/donnie_1.mp4',
-        points: 300, CategoryId: category.id
-      },
-      { question: '', answer: 'Gladiator', answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/childsplai/gladiator_solution.jpg', mediaType: 'video',
-        mediaUrl: '/media/questions/childsplai/gladiator_1.mp4',
-        points: 400, CategoryId: category.id
-      },
-      { question: '', answer: 'The Great Gatsby', answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/childsplai/gatsby_solution.jpg', mediaType: 'video',
-        mediaUrl: '/media/questions/childsplai/gatsby_1.mp4',
-        points: 500, CategoryId: category.id
-      },
-    ]);
-
-    // Category 3: Classic Movies
-    var category = await Category.create({ name: 'Movie Frames', RoundId: round.id });
-    await Question.bulkCreate([
-      { question: '',
-        answer: 'Avatar',
-        mediaType: 'slides',
-        mediaUrls: [
-          '/media/questions/movieframes/avatar/image1.jpg',
-          '/media/questions/movieframes/avatar/image2.jpg',
-          '/media/questions/movieframes/avatar/image3.jpg',
-          '/media/questions/movieframes/avatar/image4.jpg',
-          '/media/questions/movieframes/avatar/image5.jpg'
-        ],
-        answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/movieframes/avatar/solution.jpg',
-        points: 100,
-        CategoryId: category.id },
-        { question: '',
-        answer: 'Godzilla',
-        mediaType: 'slides',
-        mediaUrls: [
-          '/media/questions/movieframes/godzilla/image1.jpg',
-          '/media/questions/movieframes/godzilla/image2.jpg',
-          '/media/questions/movieframes/godzilla/image3.jpg',
-          '/media/questions/movieframes/godzilla/image4.jpg',
-          '/media/questions/movieframes/godzilla/image5.jpg'
-        ],
-        answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/movieframes/godzilla/solution.jpeg',
-        points: 200,
-        CategoryId: category.id },
-        { question: '',
-        answer: 'Hangover',
-        mediaType: 'slides',
-        mediaUrls: [
-          '/media/questions/movieframes/hangover/image1.jpg',
-          '/media/questions/movieframes/hangover/image2.jpg',
-          '/media/questions/movieframes/hangover/image3.jpg',
-          '/media/questions/movieframes/hangover/image4.jpg',
-          '/media/questions/movieframes/hangover/image5.jpg'
-        ],
-        answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/movieframes/hangover/solution.webp',
-        points: 300,
-        CategoryId: category.id },
-        { question: '',
-        answer: 'Hackers',
-        mediaType: 'slides',
-        mediaUrls: [
-          '/media/questions/movieframes/hackers/image1.jpg',
-          '/media/questions/movieframes/hackers/image2.jpg',
-          '/media/questions/movieframes/hackers/image3.jpg',
-          '/media/questions/movieframes/hackers/image4.jpg',
-          '/media/questions/movieframes/hackers/image5.jpg'
-        ],
-        answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/movieframes/hackers/solution.jpg',
-        points: 400,
-        CategoryId: category.id },
-        { question: '',
-        answer: 'Coco',
-        mediaType: 'slides',
-        mediaUrls: [
-          '/media/questions/movieframes/coco/image1.jpg',
-          '/media/questions/movieframes/coco/image2.jpg',
-          '/media/questions/movieframes/coco/image3.jpg',
-          '/media/questions/movieframes/coco/image4.jpg',
-          '/media/questions/movieframes/coco/image5.jpg'
-        ],
-        answerMediaType: 'image',
-        answerMediaUrl: '/media/questions/movieframes/coco/solution.jpeg',
-        points: 500,
-        CategoryId: category.id },
-    ]);
-
-    // Category 4: World Geography
-    var category = await Category.create({ name: 'Gummi Bears', RoundId: round.id });
-    await Question.bulkCreate([
-      { question: '', answer: 'Spanish', mediaType: 'video',
-        mediaUrl: '/media/questions/gummibears/Spanish.mp4',
-        points: 100, CategoryId: category.id
-      },
-      { question: '', answer: 'Dutch', mediaType: 'video',
-        mediaUrl: '/media/questions/gummibears/Dutch.mp4',
-        points: 200, CategoryId: category.id
-      },
-      { question: '', answer: 'Russian', mediaType: 'video',
-        mediaUrl: '/media/questions/gummibears/Russian.mp4',
-        points: 300, CategoryId: category.id
-      },
-      { question: '', answer: 'Hindi', mediaType: 'video',
-        mediaUrl: '/media/questions/gummibears/Hindi.mp4',
-        points: 400, CategoryId: category.id
-      },
-      { question: '', answer: 'Korean', mediaType: 'video',
-        mediaUrl: '/media/questions/gummibears/Korean.mp4',
-        points: 500, CategoryId: category.id
-      },
-    ]);
-
     // Category 5: Literature
-    var category = await Category.create({ name: 'Name that Song', RoundId: round.id });
+    var category = await Category.create({ name: 'Songless', RoundId: round.id });
     await Question.bulkCreate([
-      { question: '', answer: 'Bohemian Rhapsody', mediaUrl: '/media/questions/namethatsong/bohemianrhapsody.mp3', mediaType: 'audio', points: 100, CategoryId: category.id },
-      { question: '', answer: 'Good Riddance', mediaUrl: '/media/questions/namethatsong/goodriddance.mp3', mediaType: 'audio', points: 200, CategoryId: category.id },
-      { question: '', answer: 'Three Little Birds', mediaUrl: '/media/questions/namethatsong/threelittlebirds.mp3', mediaType: 'audio', points: 300, CategoryId: category.id },
-      { question: '', answer: 'Clint Eastwood', mediaUrl: '/media/questions/namethatsong/clinteastwood.mp3', mediaType: 'audio', points: 400, CategoryId: category.id },
-      { question: '', answer: 'Space Oddity', mediaUrl: '/media/questions/namethatsong/spaceoddity.mp3', mediaType: 'audio', points: 500, CategoryId: category.id },
+      { question: '', answer: 'Aerosmith - Dream On', mediaUrl: '/dreamon.mp3', mediaType: 'songless', points: 100, CategoryId: category.id,
+        answerMediaType: 'audio',
+        answerMediaUrl: '/dreamon_solution.mp3',
+       },
+      { question: '', answer: 'Oasis - Dont look back in anger', mediaUrl: '/anger.mp3', mediaType: 'songless', points: 200, CategoryId: category.id,
+        answerMediaType: 'audio',
+        answerMediaUrl: '/anger_solution.mp3', },
+      { question: '', answer: 'Elton John - Rocket Man', mediaUrl: '/rocketman.mp3', mediaType: 'songless', points: 300, CategoryId: category.id,
+        answerMediaType: 'audio',
+        answerMediaUrl: '/rocketman_solution.mp3', },
+      { question: '', answer: 'Amy Winehouse - Valerie', mediaUrl: '/valerie.mp3', mediaType: 'songless', points: 400, CategoryId: category.id,
+        answerMediaType: 'audio',
+        answerMediaUrl: '/valerie_solution.mp3', },
+      { question: '', answer: 'Lou Reed - Perfect Day', mediaUrl: '/perfectday.mp3', mediaType: 'songless', points: 500, CategoryId: category.id,
+        answerMediaType: 'audio',
+        answerMediaUrl: '/perfectday_solution.mp3', },
     ]);
 
-    var category = await Category.create({ name: 'Chat Acronyms', RoundId: round.id });
-    await Question.bulkCreate([
-      { question: 'brb', answer: 'Be Right Back', mediaType: 'text', points: 100, CategoryId: category.id },
-      { question: 'lol', answer: 'Laughing out Loud', mediaType: 'text', points: 200, CategoryId: category.id },
-      { question: 'jk', answer: 'Just Kidding', mediaType: 'text', points: 300, CategoryId: category.id },
-      { question: 'tbh', answer: 'To be Honest', mediaType: 'text', points: 400, CategoryId: category.id },
-      { question: 'j4f', answer: 'Just for fun', mediaType: 'text', points: 500, CategoryId: category.id },
-    ]);
 
     // Create rounds for the game
     var round = await Round.create({ name: "Round 2", GameId: game.id });
