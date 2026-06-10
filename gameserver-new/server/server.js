@@ -69,6 +69,96 @@ const reloadGameState = async () => {
   io.emit('gameState', gameState);
 };
 
+function sortPlayersBySeat(players) {
+  return players.sort((a, b) => a.id - b.id);
+}
+
+function normalizeBuzzerId(buzzerId) {
+  if (buzzerId === undefined || buzzerId === null) {
+    return null;
+  }
+
+  const normalized = String(buzzerId).trim();
+  return normalized === '' ? null : normalized;
+}
+
+async function savePlayerBuzzer(player, buzzerId) {
+  const normalizedBuzzerId = normalizeBuzzerId(buzzerId);
+
+  if (normalizeBuzzerId(player.buzzer) === normalizedBuzzerId) {
+    return;
+  }
+
+  player.buzzer = normalizedBuzzerId;
+  await player.save();
+}
+
+async function getSeatIndexForPlayer(player) {
+  const round = await Round.findByPk(player.RoundId, { include: [Player] });
+
+  if (!round || !round.Players) {
+    return -1;
+  }
+
+  const players = sortPlayersBySeat(round.Players);
+  return players.findIndex((roundPlayer) => roundPlayer.id === player.id);
+}
+
+async function syncBuzzerToSeat(seatIndex, buzzerId) {
+  if (!gameState || seatIndex < 0) {
+    return;
+  }
+
+  const rounds = await Round.findAll({
+    where: { GameId: gameState.id },
+    include: [Player],
+  });
+
+  for (const round of rounds) {
+    const players = sortPlayersBySeat(round.Players || []);
+    const player = players[seatIndex];
+
+    if (player) {
+      await savePlayerBuzzer(player, buzzerId);
+    }
+  }
+}
+
+async function syncActiveRoundBuzzersToRound(roundId) {
+  if (!gameState || !gameState.ActiveRound || !gameState.ActiveRound.Players) {
+    return;
+  }
+
+  const targetRound = await Round.findByPk(roundId, { include: [Player] });
+
+  if (!targetRound || !targetRound.Players) {
+    return;
+  }
+
+  const sourcePlayers = sortPlayersBySeat(gameState.ActiveRound.Players);
+  const targetPlayers = sortPlayersBySeat(targetRound.Players);
+
+  for (let seatIndex = 0; seatIndex < targetPlayers.length; seatIndex++) {
+    await savePlayerBuzzer(targetPlayers[seatIndex], sourcePlayers[seatIndex]?.buzzer);
+  }
+}
+
+function releaseBuzzerSlot(buzzerId) {
+  const normalizedBuzzerId = normalizeBuzzerId(buzzerId);
+
+  if (!normalizedBuzzerId) {
+    return;
+  }
+
+  const buzzer = buzzers.find((b) => b.uniqueId === normalizedBuzzerId);
+
+  if (buzzer) {
+    buzzer.uniqueId = undefined;
+    buzzer.socket = undefined;
+    buzzer.color = buzzerColors[Number(buzzer.name)] || buzzer.color;
+  }
+}
+
 // Initialize game state on server start
 if (gameState === undefined) {
   reloadGameState();
@@ -95,9 +185,11 @@ io.on('connection', async (socket) => {
 
   socket.on('setActiveRound', async (roundId) => {
     console.log("received setActiveRound("+roundId+")");
+    await syncActiveRoundBuzzersToRound(roundId);
     gameState.activeRoundId = roundId;
+    gameState.activePlayerId = null;
     gameState.showSolution = false;
-    updateGameState();
+    await updateGameState();
   });
 
 
@@ -170,12 +262,6 @@ io.on('connection', async (socket) => {
     updateGameState();
   });
 
-  socket.on('setActiveRound', async (roundId) => {
-    console.log("Received setActiveRound:", roundId);
-    gameState.activeRoundId = roundId;
-    updateGameState();
-  });
-
   socket.on('setIndex', async (idx) => {
     console.log("received setIndex("+idx+")");
     io.emit('setIndex', idx);
@@ -192,15 +278,23 @@ io.on('connection', async (socket) => {
     try {
       // Update the game in the database
       var playerDb = await Player.findByPk(player.id);
+      const previousBuzzer = playerDb.buzzer;
       playerDb.name = player.name;
       playerDb.score = player.score;
-      playerDb.buzzer = player.buzzer;
-      playerDb.save();
+      playerDb.buzzer = normalizeBuzzerId(player.buzzer);
+      await playerDb.save();
+
+      const seatIndex = await getSeatIndexForPlayer(playerDb);
+      await syncBuzzerToSeat(seatIndex, playerDb.buzzer);
+
+      if (normalizeBuzzerId(previousBuzzer) !== normalizeBuzzerId(playerDb.buzzer)) {
+        releaseBuzzerSlot(previousBuzzer);
+      }
     } catch (error) {
       console.error('Error updating game state in DB:', error);
     }
 
-    updateGameState();
+    await updateGameState();
   });
 
   socket.on('playMedia', () => {
@@ -279,18 +373,21 @@ buzzerServer.listen(8080, '0.0.0.0', () => {
 async function assignBuzzerToPlayer(buzzer) {
   if (!gameState || !gameState.ActiveRound) return;
 
-  const players = gameState.ActiveRound.Players;
+  const players = sortPlayersBySeat(gameState.ActiveRound.Players);
+  const existingSeatIndex = players.findIndex((player) => player.buzzer === buzzer.uniqueId);
+  const seatIndex = existingSeatIndex >= 0
+    ? existingSeatIndex
+    : players.findIndex((player) => !normalizeBuzzerId(player.buzzer));
 
-  for(var i=0; i<players.length; i++) {
-    if(players[i] && (!players[i].buzzer || players[i].buzzer == '' || players[i].buzzer == buzzer.uniqueId)) {
-      buzzer.color = buzzerColors[i];
-      players[i].buzzer = buzzer.uniqueId;
-      console.log(`Buzzer ${buzzer.name} assigned to player ${players[i].name}`);
-      await players[i].save(); // Persist the assignment in the DB
-      reloadGameState();  // Notify the UI about the new assignment
-      break;
-    }
+  if (seatIndex < 0) {
+    console.log(`No available player seats for buzzer ${buzzer.name}.`);
+    return;
   }
+
+  buzzer.color = buzzerColors[seatIndex];
+  await syncBuzzerToSeat(seatIndex, buzzer.uniqueId);
+  console.log(`Buzzer ${buzzer.name} assigned to seat ${seatIndex + 1} (${players[seatIndex].name})`);
+  reloadGameState();  // Notify the UI about the new assignment
 }
 
 // Handle incoming data from a buzzer
